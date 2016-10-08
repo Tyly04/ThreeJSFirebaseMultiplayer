@@ -1,0 +1,96 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+    <script src="https://www.gstatic.com/firebasejs/3.4.1/firebase.js"></script>
+    <script>
+        // Initialize Firebase
+        var config = {
+            apiKey: "AIzaSyAW7LXQQRiyAlpwQ0PJ5bxGaQaVQ5uOSy0",
+            authDomain: "threejs-multiplayer.firebaseapp.com",
+            databaseURL: "https://threejs-multiplayer.firebaseio.com",
+            storageBucket: "threejs-multiplayer.appspot.com",
+            messagingSenderId: "70126112369"
+        };
+        firebase.initializeApp(config);
+    </script>
+    <script src="js/vendor/three.min.js"></script>
+    <script src="js/app.js"></script>
+    <script src="js/character.js"></script>
+    <script src="jquery-3.1.1.min.js"></script>
+    <script src="js/world.js"></script>
+    <script>
+        var basicScene;
+        var firebaseGlobal = {};
+        var players = [];
+
+        function init() {
+            window.setTimeout(function() {
+                $("#reminder").fadeOut(500, function() {
+                    startGame();
+                });
+            }, 2500)
+        }
+
+        function startGame() {
+            basicScene = new BasicScene();
+            document.body.appendChild(basicScene.renderer.domElement);
+
+            function animate() {
+                requestAnimationFrame(animate);
+                basicScene.frame();
+            }
+            animate();
+            logIn();
+        }
+        window.onload = init;
+
+        function logIn() {
+            var provider = new firebase.auth.GoogleAuthProvider();
+            firebaseGlobal.playerNumbers = firebase.database().ref('/PlayerNumbers');
+            firebaseGlobal.playerNumbers.once('value').then(function(data) {
+                if (data.val() === 5) {
+                    firebaseGlobal.playerNumber = 1;
+                    firebaseGlobal.playerNumbers.set(1);
+                }
+                else {
+                    firebaseGlobal.playerNumber = data.val() + 1;
+                    firebaseGlobal.playerNumbers.set(data.val() + 1);
+                }
+                if (firebaseGlobal.playerNumber === undefined) {
+                    window.alert("Sorry, something went wrong, please reload.");
+                }
+            });
+            firebase.auth().signInWithPopup(provider).then(function(result) {
+                // This gives you a Google Access Token. You can use it to access the Google API.
+                var token = result.credential.accessToken;
+                // The signed-in user info.
+                var user = result.user;
+                firebase.database().ref('/playerTags/' + firebaseGlobal.playerNumber).set({
+                    id: firebaseGlobal.playerNumber,
+                    xPos: basicScene.user.mesh.position.x,
+                    zPos: basicScene.user.mesh.position.z
+                });
+                // ...
+            }).catch(function(error) {
+                // Handle Errors here.
+                var errorCode = error.code;
+                var errorMessage = error.message;
+                // The email of the user's account used.
+                var email = error.email;
+                // The firebase.auth.AuthCredential type that was used.
+                var credential = error.credential;
+                // ...
+            });
+        }
+    </script>
+</head>
+
+<body>
+    <div id="reminder">
+        <h4>Game Loading...</h4>
+        We take this time to remind you to enable pop-ups, to allow Google Authentication.
+    </div>
+</body>
+
+</html>

@@ -158,16 +158,16 @@ BasicScene.prototype = {
         // And draw !
         this.renderer.render(this.scene, this.camera);
     },
-    getPlayers: function(playerId, arrayPlace) {
+    getPlayers: function(arrayPlace, playerId) {
         //One problem with updating the players, and latency, might be here. Instead of running it in an update function, run this with a for loop once, with on instead of once
         if (playerId !== firebaseGlobal.playerNumber) {
             firebase.database().ref('/playerTags/' + playerId + '/xPos').once('value').then(function(data) {
-                data = data.val();
-                players[arrayPlace].position.x = data;
+                 var val = data.val();
+                players[arrayPlace].position.x = val;
             });
             firebase.database().ref('/playerTags/' + playerId + '/zPos').once('value').then(function(data) {
-                data = data.val();
-                players[arrayPlace].position.z = data;
+                var val = data.val();
+                players[arrayPlace].position.z = val;
             });
         }
     }

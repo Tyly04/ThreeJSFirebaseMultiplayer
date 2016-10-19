@@ -43,8 +43,8 @@
                     firebaseGlobal.maxPlayers = number;
                 });
                 firebase.database().ref('/playerTags/' + firebaseGlobal.playerNumber).set({
-                    posX: 0,
-                    posZ: 0
+                    zPos: 0,
+                    xPos: 0
                 });
                 $("body").html("You can leave now.");
             });

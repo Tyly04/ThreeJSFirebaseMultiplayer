@@ -152,7 +152,7 @@ BasicScene.prototype = {
         this.user.motion();
         // Set the camera to look at our user's character
         this.setFocus(this.user.mesh);
-        for(var i = 0; i < 5; i++){
+        for(var i = 0; i < firebaseGlobal.maxPlayers; i++){
             this.getPlayers(i);
         }
         // And draw !

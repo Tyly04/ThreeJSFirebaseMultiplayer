@@ -28,12 +28,25 @@
             var testWindow = window.open();
             if (testWindow === undefined || testWindow === null) {
                 $("#reminder").html("It looks like you've got pop-ups disabled. Please enable them, then refresh to continue.");
+                testWindow.close();
             }
             else {
                 $("#reminder").fadeOut();
                 testWindow.close();
                 startGame();
             }
+            $("#quit").click(function() {
+                var number;
+                firebaseGlobal.playerNumbers.once('value').then(function(data) {
+                    number = data.val();
+                    firebaseGlobal.playerNumbers.set(number - 1);
+                });
+                firebase.database().ref('/playerTags/' + firebaseGlobal.playerNumber).set({
+                    posX: 0,
+                    posZ: 0
+                });
+                $("body").html("You can leave now.");
+            });
         }
 
         function startGame() {
@@ -47,7 +60,7 @@
             animate();
             getNumber();
         }
-        
+
         function logIn() {
             var provider = new firebase.auth.GoogleAuthProvider();
             firebase.auth().signInWithPopup(provider).then(function(result) {
@@ -56,7 +69,6 @@
                 // The signed-in user info.
                 var user = result.user;
                 firebase.database().ref('/playerTags/' + firebaseGlobal.playerNumber).set({
-                    id: firebaseGlobal.playerNumber,
                     xPos: basicScene.user.mesh.position.x,
                     zPos: basicScene.user.mesh.position.z
                 });
@@ -77,24 +89,43 @@
             firebaseGlobal.playerNumbers = firebase.database().ref('/PlayerNumbers');
             firebaseGlobal.playerNumbers.once('value').then(function(data) {
                 if (data.val() === 5) {
-                    firebaseGlobal.playerNumber = 1;
-                    firebaseGlobal.playerNumbers.set(1);
+                    window.alert("Sorry, the max player limit has been reached. Try again later.");
+                    $("body").html("Refresh to try again.");
                 }
                 else {
                     firebaseGlobal.playerNumber = data.val() + 1;
                     firebaseGlobal.playerNumbers.set(data.val() + 1);
+                    logIn();
                 }
-                logIn();
             });
         }
         window.onload = init;
         firebaseGlobal.playerNumber = 1;
+        window.onbeforeunload = confirmExit;
+
+        function confirmExit() {
+            return "Please press the quit button to leave.";
+        }
     </script>
+    <style>
+        #quit button {
+            background-color: #00DDFF;
+            border: none;
+            width: 100px;
+            height: 50px;
+            text-align: center;
+            position: fixed;
+            top: 10;
+        }
+    </style>
 </head>
 
 <body>
     <div id="reminder">
 
+    </div>
+    <div id="quit">
+        <button>QUIT</button>
     </div>
 </body>
 

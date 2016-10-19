@@ -43,8 +43,6 @@ BasicScene.prototype = {
             cube.position.x = 0;
             cube.position.z = 0;
             //BUG: Five can't be seen.
-            cube.savedPosX = cube.position.x;
-            cube.savedPosZ = cube.position.z;
             players.push(cube);
         }
         // Start the events handlers
@@ -161,20 +159,15 @@ BasicScene.prototype = {
         this.renderer.render(this.scene, this.camera);
     },
     getPlayers: function(playerId) {
+        //One problem with updating the players, and latency, might be here. Instead of running it in an update function, run this with a for loop once, with on instead of once
         if (playerId !== firebaseGlobal.playerNumber) {
-            firebase.database().ref('/playerTags/' + playerId + '/xPos').once('value', function(data) {
+            firebase.database().ref('/playerTags/' + playerId + '/xPos').once('value').then(function(data) {
                 data = data.val();
-                players[playerId].savedPosX = data;
-                if (players[playerId].position.x != data) {
-                    players[playerId].position.x = data;
-                }
+                players[playerId].position.x = data;
             });
-            firebase.database().ref('/playerTags/' + playerId + '/zPos').once('value', function(data) {
+            firebase.database().ref('/playerTags/' + playerId + '/zPos').once('value').then(function(data) {
                 data = data.val();
-                players[playerId].savedPosZ = data;
-                if (players[playerId].position.z != data) {
-                    players[playerId].position.z = data;
-                }
+                players[playerId].position.z = data;
             });
         }
     }

@@ -40,6 +40,7 @@
                 firebaseGlobal.playerNumbers.once('value').then(function(data) {
                     number = data.val();
                     firebaseGlobal.playerNumbers.set(number - 1);
+                    firebaseGlobal.maxPlayers = number;
                 });
                 firebase.database().ref('/playerTags/' + firebaseGlobal.playerNumber).set({
                     posX: 0,
@@ -72,6 +73,9 @@
                     xPos: basicScene.user.mesh.position.x,
                     zPos: basicScene.user.mesh.position.z
                 });
+                firebaseGlobal.playerNumbers.on('value', function(data){
+                    firebaseGlobal.maxPlayers = data.val();
+                });
                 // ...
             }).catch(function(error) {
                 // Handle Errors here.
@@ -102,7 +106,6 @@
         window.onload = init;
         firebaseGlobal.playerNumber = 1;
         window.onbeforeunload = confirmExit;
-
         function confirmExit() {
             return "Please press the quit button to leave.";
         }

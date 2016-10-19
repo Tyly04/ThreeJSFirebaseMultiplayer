@@ -152,22 +152,22 @@ BasicScene.prototype = {
         this.user.motion();
         // Set the camera to look at our user's character
         this.setFocus(this.user.mesh);
-        for(var i = 1; i <= firebaseGlobal.maxPlayers; i++){
-            this.getPlayers(i);
+        for(var i = 0; i < firebaseGlobal.maxPlayers; i++){
+            this.getPlayers(i, i+1);
         }
         // And draw !
         this.renderer.render(this.scene, this.camera);
     },
-    getPlayers: function(playerId) {
+    getPlayers: function(playerId, arrayPlace) {
         //One problem with updating the players, and latency, might be here. Instead of running it in an update function, run this with a for loop once, with on instead of once
         if (playerId !== firebaseGlobal.playerNumber) {
             firebase.database().ref('/playerTags/' + playerId + '/xPos').once('value').then(function(data) {
                 data = data.val();
-                players[playerId].position.x = data;
+                players[arrayPlace].position.x = data;
             });
             firebase.database().ref('/playerTags/' + playerId + '/zPos').once('value').then(function(data) {
                 data = data.val();
-                players[playerId].position.z = data;
+                players[arrayPlace].position.z = data;
             });
         }
     }

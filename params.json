@@ -1,0 +1,6 @@
+{
+  "name": "Three JS Firebase Multiplayer",
+  "tagline": "",
+  "body": "# ThreeJSFirebaseMultiplayer\r\nA Three JS Multiplayer game using Firebase, by Me, [Tyly04](https://github.com/Tyly04/). Just so you know, I didn't add the walking around and collision detection. \r\nThis was thanks to: \r\n[Web Maestro](https://github.com/WebMaestroFr/collisions-detection-three-js)\r\n\r\nI got the inspiration from [jgordon510](https://github.com/jgordon510) and [Firebase Asteroids](https://mmoasteroids.firebaseapp.com/).\r\nI used the 3D Javascript Engine [ThreeJS by Mr. Doob](https://threejs.org).\r\nYou can check out the Github Project [here](https://github.com/Tyly04/ThreeJSFirebaseMultiplayer).\r\nYou can play the game (Bug testing, in progress) [here](https://www.threejs-multiplayer.firebaseapp.com/).\r\n",
+  "note": "Don't delete this file! It's used internally to help with page regeneration."
+}
